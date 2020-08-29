@@ -5,6 +5,7 @@ let cursorX = 250;
 let cursorY = 383;
 let action = "fight";
 let inAction = false;
+let enemyTurn = false;
 
 rpgcode.registerKeyDown("LEFT_ARROW", function() {
    action = "fight";
@@ -21,19 +22,14 @@ rpgcode.registerKeyDown("RIGHT_ARROW", function() {
 }, false);
 
 rpgcode.registerKeyDown("ENTER", function() {
-   if (inAction === true) {
+   if (inAction === true || enemyTurn === true) {
       return;
    }
    
    if (action === "fight") {
       inAction = true;
       
-      rpgcode.animateSprite("enemy-1", "DEFEND", function() {
-         rpgcode.drawText(40, 40, action);
-         rpgcode.renderNow();
-
-         inAction = false;
-      });
+      doPlayerAttack();
    }
 }, false);
 
@@ -57,4 +53,35 @@ function draw() {
    rpgcode.drawImage("cursor.png", cursorX, cursorY, 10, 17, 0);
    
    rpgcode.renderNow();
+}
+
+function doPlayerAttack() {
+   draw();
+   
+   rpgcode.drawText(40, 40, action);
+   rpgcode.renderNow();
+
+   rpgcode.animateSprite("enemy-1", "DEFEND", handlePlayerAttack);
+}
+
+function handlePlayerAttack() {
+   enemyTurn = true;
+   inAction = false;
+
+   rpgcode.delay(1000, doEnemyAttack, false);
+}
+
+function doEnemyAttack() {
+   draw();
+   
+   rpgcode.drawText(40, 40, "Enemy Attack");
+   rpgcode.renderNow();
+
+   rpgcode.animateSprite("enemy-1", "ATTACK", handleEnemyAttack);
+}
+
+function handleEnemyAttack() {
+   draw();
+
+   enemyTurn = false;
 }
