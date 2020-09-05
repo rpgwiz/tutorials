@@ -81,7 +81,18 @@ function doEnemyAttack() {
 }
 
 function handleEnemyAttack() {
+   const enemy = rpgcode.getSprite("enemy-1");
+   const attackPower = enemy.sprite.enemy.attack;
+
+   const character = rpgcode.getCharacter();
+   character.health = character.health - attackPower;
+
    draw();
 
-   enemyTurn = false;
+   if (0 < character.health) {
+      // Continue the battle, player character has some health
+      enemyTurn = false;
+   } else {
+      rpgcode.restart();
+   }   
 }
