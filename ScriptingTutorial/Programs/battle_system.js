@@ -68,7 +68,20 @@ function handlePlayerAttack() {
    enemyTurn = true;
    inAction = false;
 
-   rpgcode.delay(1000, doEnemyAttack, false);
+   const character = rpgcode.getCharacter();
+   const attackPower = character.attack;
+
+   const enemy = getEnemy("enemy-1");
+   enemy.health = enemy.health - attackPower;
+   
+   draw();
+
+   if (0 < enemy.health) {
+      // Continue the battle, enemy has some health
+      rpgcode.delay(1000, doEnemyAttack, false);
+   } else {
+      rpgcode.restart();
+   } 
 }
 
 function doEnemyAttack() {
@@ -81,8 +94,8 @@ function doEnemyAttack() {
 }
 
 function handleEnemyAttack() {
-   const enemy = rpgcode.getSprite("enemy-1");
-   const attackPower = enemy.sprite.enemy.attack;
+   const enemy = getEnemy("enemy-1");
+   const attackPower = enemy.attack;
 
    const character = rpgcode.getCharacter();
    character.health = character.health - attackPower;
@@ -95,4 +108,9 @@ function handleEnemyAttack() {
    } else {
       rpgcode.restart();
    }   
+}
+
+// Utility functions
+function getEnemy(enemyId) {
+   return rpgcode.getSprite(enemyId).sprite.enemy;
 }
